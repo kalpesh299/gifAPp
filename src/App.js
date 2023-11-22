@@ -4,98 +4,45 @@ import './App.css';
 import { GifCard } from './components/GifCard';
 
 function App() {
-  const [data, setData] = useState([]);
-  const [filterdata,setfilterdata]=useState([]);
+
+ 
   const [text,setext]=useState("");
-  const [serchkey,setsearchkey]=useState("");
+  const [gifdata,setgifdata]=useState([]);
+  const [searchKey,setSearchkey]=useState("");
 
   useEffect(()=>{
-    const getData=async()=>{
-           const options = {
-    method: 'GET',
-    url: 'https://exercisedb.p.rapidapi.com/exercises/bodyPart/back',
-    params: {limit: 100},
-    headers: {
-      'X-RapidAPI-Key': 'f29dd72edbmsh97113ab990ccb5fp1ffb87jsn3068bca06d4d',
-      'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
-    }
-    
-  };
-  
-  try {
-    const response = await axios.request(options);
-    
-    setData(response.data);
-setfilterdata(data);
-   
-  } catch (error) {
-    console.error(error);
+// console.log(searchKey)
+   const getData=async()=>{
+
+    const {data}=await axios.get(`https://api.giphy.com/v1/gifs/search?q=${searchKey}&api_key=KmbQ5nkbKYRtGFwhKMSBE0mtuMC2fLsN&limit=20`);
+
+    setgifdata(data.data);
+    // console.log(gifdata[0].images.fixed_height.webp);
+// console.log(data.data[0].images.fixed_height.webp);
+   }
+  //  console.log(gifdata[0][0].images.fixed_height.webp)
+     getData();
+     
+  },[searchKey])
+
+  const clickHandle=()=>{
+setSearchkey(text);
   }
-  
-      
-    }
-    getData();
-    
-  },[])
-
-
-
-  useEffect(()=>{
-    const getData=async()=>{
-           const options = {
-    method: 'GET',
-    url: 'https://exercisedb.p.rapidapi.com/exercises/bodyPart/back',
-    params: {limit: 100},
-    headers: {
-      'X-RapidAPI-Key': 'f29dd72edbmsh97113ab990ccb5fp1ffb87jsn3068bca06d4d',
-      'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
-    }
-    
-  };
-  
-  try {
-    const response = await axios.request(options);
-    
-    setData(response.data);
-setfilterdata(data);
-
-if(text!=""){
-
-  const FilteredData=data.filter((el)=>{})
-
-}
-   
-  } catch (error) {
-    console.error(error);
-  }
-  
-      
-    }
-    getData();
-    
-  },[text,data])
-
-const clickHandle=()=>{
-  setsearchkey(text);
-  console.log(serchkey);
-}
-
-
+ 
 
   return (
-    <div className="App">
+    <div className="w-screen  bg-gray-500">
       <div className='flex items-center justify-center'>
-      <input value={text} className='border-2 border-black p-4 rounded-xl w-96' placeholder='Search any Exercise GIF' onChange={(e)=>setext(e.target.value)}/>
-       <button className='border-2 border-black p-3 rounded-xl ml-2' onClick={clickHandle}>Search GIF</button>
+        <input type="text" value={text} placeholder='Seacrh any GiF' className='border-2 mt-4 border-black p-4 rounded-xl w-96' onChange={(e)=>setext(e.target.value)}/>
+        <button className='bg-black text-white w-32 p-3 rounded font-bold ml-3 mt-4' onClick={clickHandle}>Click</button>
       </div>
-    
-     <div className='flex flex-wrap'>
-     {filterdata.map((el)=>{
-      return <GifCard gifData={el}/>
-     })}
 
+     <div className='flex flex-row flex-wrap justify-evenly  border-white  border-2  items-center w-1/2 m-auto mt-4 rounded-xl  bg-black'>
+      {gifdata.map((el)=>{
+       return <GifCard gif={el}/>
+      })}
      </div>
-     
+    
     </div>
   );
 }
